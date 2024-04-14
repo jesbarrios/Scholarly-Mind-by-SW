@@ -19,11 +19,11 @@ export default function ChatInput() {
   const [input, setInput] = useState<string>(""); 
 
   async function handleSubmit() {
-    await setTextInputHeight(50);
+    setTextInputHeight(50);
     const message = input;
     if (!message) return;
 
-    await setInput("");
+    setInput("");
 
     const apiKey = process.env.NEXT_PUBLIC_SECRETKEY!;
     const response = await newChat({ apiKey, message });
