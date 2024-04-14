@@ -120,7 +120,7 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
 
     await setInput("");
 
-    const apiKey = process.env.SECRETKEY!;
+    const apiKey = process.env.NEXT_PUBLIC_SECRETKEY!;
     if (inputRef.current) {
       inputRef.current.value = "";
     }
