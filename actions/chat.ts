@@ -182,7 +182,7 @@ async function createCompletion(
 ) {
   
   const allMessages = [
-    { role: "user", content: (process.env.NEXT_PUBLIC_PROMPT || "") as string},
+    { role: "user", content: (process.env.PROMPT || "") as string},
     ...messages,
     { role: "user", content: message },
   ];
