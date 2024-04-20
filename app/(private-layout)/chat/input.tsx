@@ -36,7 +36,8 @@ export default function ChatInput() {
         });
       }
     } else {
-      console.error("Unexpected response format:", response);
+      null;
+      //console.error("Unexpected response format:", response);
     }
   }
 

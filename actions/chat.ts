@@ -45,11 +45,25 @@ export async function newChat(params: NewMessage) {
   if (!session?.user) redirect("/login");
   let id: string | undefined;
   let error: undefined | { message: string };
+
+  let message;
+
+  message = params.message;
+
+  if (
+    params.message.toLowerCase() == "clear chat" ||
+    params.message.toLowerCase() == "clearchat" ||
+    params.message.toLowerCase() == "delete chat" ||
+    params.message.toLowerCase() == "delete conversation" ||
+    params.message.toLowerCase() == "clear cpnversation"
+  ) {
+    message = "Say this: There is no chat to clear. How may I assist you?"
+  }
   
   try {
     const responseMessage = await createCompletion(
       params.apiKey,
-      params.message
+      message,
     );
     const newConversationId = generateRandomId(8);
     const newMessageJson = [
@@ -100,6 +114,24 @@ export async function chat(params: Message) {
     texts = texts.replace(/`([^`]+)`/g, "$1");
 
     return texts;
+  }
+
+  if (
+    params.message.toLowerCase() == "clear chat" ||
+    params.message.toLowerCase() == "clearchat" ||
+    params.message.toLowerCase() == "delete chat" ||
+    params.message.toLowerCase() == "delete conversation" ||
+    params.message.toLowerCase() == "clear cpnversation"
+  ) {
+    
+    await prisma.conversation.delete({
+      where: {
+        id: params.conversationId
+      }
+    }).then(() => {
+      redirect("/chat");
+      return;
+    })
   }
 
 let formattedMessages: { role: string; content: string }[] = [];
@@ -186,8 +218,6 @@ async function createCompletion(
     ...messages,
     { role: "user", content: message },
   ];
-
-  console.log(allMessages);
 
   
   let ai: OpenAI;

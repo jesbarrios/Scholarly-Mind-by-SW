@@ -11,7 +11,6 @@ import { buttonVariants, Button } from "./ui/button";
 import prisma from "@/prisma/client";
 import { getUser } from "@/lib/auth";
 import { ScrollArea } from "./ui/scroll-area";
-import { Trash2Icon } from "lucide-react";
 
 export default function LeftPanel() {
   return (
@@ -77,13 +76,6 @@ async function ConversationList() {
             >
               {cn.name.length > 35 ? cn.name.slice(0, 35) + "..." : cn.name}
             </Link>
-            {/*<Button
-              className="w-24"
-              variant={"link"}
-            >
-              <Trash2Icon className="w-5 h-5" />
-      </Button>*/}
-            {/*<DeleteConversationButton conversationId={cn.id} />*/}
           </div>
         </SheetClose>
       ))}

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { ElementRef, useState, useEffect, useOptimistic, useRef } from "react";
 import { scholarlymind } from "../../../assets/";
 import { useSession } from "next-auth/react";
+import { Trash2Icon } from "lucide-react";
 
 import { useTheme } from "next-themes";
 
@@ -109,7 +110,6 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
   const [input, setInput] = useState<string>(""); 
   const { theme } = useTheme();
   const inputRef = useRef<ElementRef<"input">>(null);
-  const router = useRouter();
   const { toast } = useToast();
 
   async function handleSubmit() {
@@ -142,6 +142,11 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
     await setTextInputHeight(100);
   }
 
+  const handleDelete = () => {
+    setInput("Clear Chat")
+  };
+
+
   return (
     <>
       <form
@@ -154,7 +159,7 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
           style={{
             width: "95%",
             maxHeight: "100px",
-            height: textInputHeight + "px", 
+            height: textInputHeight + "px",
             outline: "none",
             border: "none",
             backgroundColor: theme === "light" ? "#E5EBF2" : "#40414f",
@@ -162,15 +167,14 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
             paddingLeft: "8px",
             paddingTop: "10px",
             paddingBottom: "10px",
-            resize: "none", 
-            overflow: "auto", 
+            resize: "none",
+            overflow: "auto",
           }}
           placeholder="Send a message."
           onChange={(e) => setInput(e.target.value)}
           value={input}
           onPaste={handlePaste}
           onKeyDownCapture={(e) => {
-
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               handleSubmit();
@@ -191,6 +195,7 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
         <span className="text-sm dark:text-white text-black">
           Scholarly Mind can make mistakes. Make sure you use responsibly.
         </span>
+        <Trash2Icon className="w-5 h-5 cursor-pointer text-red-500 ml-1" onClick={handleDelete}/>
       </div>
     </>
   );
