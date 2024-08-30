@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
-
-
 export default function ChatInput() {
   const { theme } = useTheme();
 

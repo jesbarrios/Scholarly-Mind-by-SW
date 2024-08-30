@@ -26,21 +26,29 @@ export default function UserApi() {
   }
 
   const handlePrivacyPolicyClick = () => {
-    window.open("https://scholarlywings.org/scholarlymind/privacy-policy", "_blank");
+    window.open("https://scholarlymind.scholarlywings.org/privacy-policy", "_blank");
   };
 
   const handleTermsOfServiceClick = () => {
-    window.open("https://scholarlywings.org/scholarlymind/terms-and-conditions", "_blank");
+    window.open("https://scholarlymind.scholarlywings.org/terms-and-conditions", "_blank");
   };
 
   return (
     <>
       <div className="flex flex-row items-center gap-2">
         <SignOutButton />
-        <Button className="w-30" variant={"link"} onClick={handlePrivacyPolicyClick}>
+        <Button
+          className="w-30"
+          variant={"link"}
+          onClick={handlePrivacyPolicyClick}
+        >
           Privacy Policy
         </Button>
-        <Button className="w-30" variant={"link"} onClick={handleTermsOfServiceClick}>
+        <Button
+          className="w-30"
+          variant={"link"}
+          onClick={handleTermsOfServiceClick}
+        >
           Terms & Conditions
         </Button>
       </div>

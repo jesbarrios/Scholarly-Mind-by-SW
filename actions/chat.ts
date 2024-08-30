@@ -55,7 +55,7 @@ export async function newChat(params: NewMessage) {
     params.message.toLowerCase() == "clearchat" ||
     params.message.toLowerCase() == "delete chat" ||
     params.message.toLowerCase() == "delete conversation" ||
-    params.message.toLowerCase() == "clear cpnversation"
+    params.message.toLowerCase() == "clear conversation"
   ) {
     message = "Say this: There is no chat to clear. How may I assist you?"
   }
