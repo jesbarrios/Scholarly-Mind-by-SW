@@ -108,23 +108,30 @@ type ConversationComponent = {
 function ChatInput({ addMessage, id }: ConversationComponent) {
   const [textInputHeight, setTextInputHeight] = useState(50); 
   const [input, setInput] = useState<string>(""); 
+  const [isLoading, setIsLoading] = useState(false);
   const { theme } = useTheme();
   const inputRef = useRef<ElementRef<"input">>(null);
   const { toast } = useToast();
 
-  async function handleSubmit() {
-    await setTextInputHeight(50);
-    
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (isLoading) return;
+
+    setTextInputHeight(50);
     const message = input;
     if (!message) return;
 
-    await setInput("");
+    setInput("");
 
     const apiKey = process.env.NEXT_PUBLIC_SECRETKEY!;
     if (inputRef.current) {
       inputRef.current.value = "";
     }
     addMessage(message);
+
+    setIsLoading(true);
+
     const err = await chat({
       apiKey,
       conversationId: id,
@@ -136,10 +143,14 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
         title: err.message,
       });
     }
+    setIsLoading(false);
   }
 
-  async function handlePaste(event: { preventDefault: () => void; clipboardData: any; }) {
-    await setTextInputHeight(100);
+  async function handlePaste(event: {
+    preventDefault: () => void;
+    clipboardData: any;
+  }) {
+    setTextInputHeight(100);
   }
 
   const handleDelete = () => {
@@ -150,7 +161,7 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
   return (
     <>
       <form
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="flex flex-row items-center gap-2 sm:pr-5"
       >
         <textarea
@@ -168,6 +179,7 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
             paddingTop: "10px",
             paddingBottom: "10px",
             resize: "none",
+            borderRadius: 25,
             overflow: "auto",
           }}
           placeholder="Send a message."
@@ -177,13 +189,16 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
           onKeyDownCapture={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              handleSubmit();
+              // @ts-ignore
+              if (!isLoading) handleSubmit(e);
             } else if (e.key === "Enter" && e.shiftKey) {
               setTextInputHeight(100);
             }
           }}
         />
-        <Submit />
+        <div className={isLoading ? "opacity-50 pointer-events-none" : ""}>
+          <Submit />
+        </div>
       </form>
       <div className="flex justify-center pt-4">
         <span className="text-sm dark:text-[#a8a8aa] text-black">
@@ -195,7 +210,10 @@ function ChatInput({ addMessage, id }: ConversationComponent) {
         <span className="text-sm dark:text-white text-black">
           Scholarly Mind can make mistakes. Make sure you use responsibly.
         </span>
-        <Trash2Icon className="w-5 h-5 cursor-pointer text-red-500 ml-1" onClick={handleDelete}/>
+        <Trash2Icon
+          className="w-20 h-15 cursor-pointer text-red-500"
+          onClick={handleDelete}
+        />
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import darklogo from "./darklogo.png";
-import send from "./send.jpg";
+import send from "./send.png";
 import scholarlymind from "./scholarlymind.jpg";
 import logo from "./logo.png";
 import lightlogo from "./lightLogo.png";

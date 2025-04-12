@@ -11,16 +11,20 @@ import { useTheme } from "next-themes";
 export default function ChatInput() {
   const { theme } = useTheme();
 
-  const router = useRouter();
   const { toast } = useToast();
   const [textInputHeight, setTextInputHeight] = useState(50);
   const [input, setInput] = useState<string>(""); 
+  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (isLoading) return;
+
+    if (!input) return;
+
     setTextInputHeight(50);
+    setIsLoading(true);
     const message = input;
-    if (!message) return;
-
     setInput("");
 
     const apiKey = process.env.NEXT_PUBLIC_SECRETKEY!;
@@ -32,14 +36,10 @@ export default function ChatInput() {
         toast({
           title: err,
         });
+        setIsLoading(false);
       }
-    } else {
-      null;
-      //console.error("Unexpected response format:", response);
     }
   }
-
-
 
   async function handlePaste(event: { preventDefault: () => void; clipboardData: any; }) {
     await setTextInputHeight(100);
@@ -48,7 +48,7 @@ export default function ChatInput() {
   return (
     <>
       <form
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="flex flex-row items-center gap-2 sm:pr-5"
       >
         <textarea
@@ -57,7 +57,7 @@ export default function ChatInput() {
           style={{
             width: "95%",
             maxHeight: "100px",
-            height: textInputHeight + "px", 
+            height: textInputHeight + "px",
             outline: "none",
             border: "none",
             backgroundColor: theme === "light" ? "#E5EBF2" : "#40414f",
@@ -65,8 +65,9 @@ export default function ChatInput() {
             paddingLeft: "8px",
             paddingTop: "10px",
             paddingBottom: "10px",
-            resize: "none", 
-            overflow: "auto", 
+            resize: "none",
+            borderRadius: 25,
+            overflow: "auto",
           }}
           placeholder="Send a message."
           onChange={(e) => setInput(e.target.value)}
@@ -75,14 +76,26 @@ export default function ChatInput() {
           onKeyDownCapture={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              handleSubmit();
-            } else if(e.key === "Enter" && e.shiftKey) {
+              if (!isLoading) {
+                handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+              }
+            } else if (e.key === "Enter" && e.shiftKey) {
               setTextInputHeight(100);
             }
           }}
+          disabled={isLoading}
         />
-        <Submit />
+        <div className={isLoading ? "opacity-50 pointer-events-none" : ""}>
+          <Submit />
+        </div>
       </form>
+
+      {isLoading && (
+        <div className="text-center mt-2 text-sm dark:text-white">
+          Calling Scholarly Mind...
+        </div>
+      )}
+
       <div className="flex justify-center pt-4">
         <span className="text-sm dark:text-[#a8a8aa] text-black">
           Scholarly Mind by Scholarly Wings. Free use. Guiding Students in
